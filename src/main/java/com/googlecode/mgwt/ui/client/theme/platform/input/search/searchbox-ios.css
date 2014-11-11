@@ -7,7 +7,7 @@
 
 @if user.agent safari {
   .mgwt-SearchBox {
-    background-image: literal('-webkit-gradient(linear,left bottom,left top,color-stop(0, #A8ACB9),color-stop(1, #eee))');
+    background-color: #C9C9CE;
   }
 }
 

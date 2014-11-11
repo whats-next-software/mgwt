@@ -19,7 +19,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 
 /**
- * The apperance for all ImageButtons.
+ * The appearance for all ImageButtons.
  */
 public interface ImageButtonAppearance extends ButtonBaseAppearance {
 
