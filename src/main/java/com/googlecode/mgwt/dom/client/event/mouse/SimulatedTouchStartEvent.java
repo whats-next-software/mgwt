@@ -14,6 +14,7 @@
 package com.googlecode.mgwt.dom.client.event.mouse;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.TouchStartEvent;
@@ -42,6 +43,17 @@ public class SimulatedTouchStartEvent extends TouchStartEvent {
     pageY = event.getScreenY();
     setNativeEvent(event.getNativeEvent());
     setSource(event.getSource());
+  }
+
+  public SimulatedTouchStartEvent(int clientX, int clientY, int pageX,
+      int pageY, int touchId, NativeEvent event, Object source) {
+    this.touchId = touchId;
+    this.clientX = clientX;
+    this.clientY = clientY;
+    this.pageX = pageX;
+    this.pageY = pageY;
+    setNativeEvent(event);
+    setSource(source);
   }
 
   @Override
