@@ -25,7 +25,6 @@ import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-
 import com.googlecode.mgwt.dom.client.event.touch.TouchHandler;
 import com.googlecode.mgwt.ui.client.MGWT;
 import com.googlecode.mgwt.ui.client.util.IconHandler;
@@ -40,6 +39,10 @@ public class ImageButton extends ButtonBase implements IsSizeable {
       .create(ImageButtonAppearance.class);
 
   private final ImageButtonAppearance appearance;
+
+  public enum TextPosition {
+    LEFT, RIGHT;
+  }
 
   @UiField
   public Element text;
@@ -121,6 +124,19 @@ public class ImageButton extends ButtonBase implements IsSizeable {
   @Override
   public void setText(String text) {
     this.text.setInnerText(text);
+  }
+
+  public void setTextPosition(TextPosition pos) {
+    switch (pos) {
+    case LEFT:
+      addStyleName(appearance.css().reverseOrder());
+      break;
+    case RIGHT:
+      removeStyleName(appearance.css().reverseOrder());
+      break;
+    default:
+      throw new RuntimeException("should never get here");
+    }
   }
 
   public void setIcon(ImageResource icon) {

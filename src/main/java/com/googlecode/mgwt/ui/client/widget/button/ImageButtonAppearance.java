@@ -44,6 +44,9 @@ public interface ImageButtonAppearance extends ButtonBaseAppearance {
     @ClassName("mgwt-ImageButton-small")
     String small();
 
+    @ClassName("mgwt-ImageButton-reverse-order")
+    String reverseOrder();
+
     String ICON_BACKGROUND_COLOR();
 
     String ICON_BACKGROUND_COLOR_ACTIVE();
