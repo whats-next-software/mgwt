@@ -14,6 +14,6 @@ under the License.
 
 <module>
   <replace-with class="com.googlecode.mgwt.ui.client.theme.platform.main.MainResourceAppearancePlatform">
-    <when-type-is class="com.googlecode.mgwt.ui.client.resource.MainResourceAppearance" />
+    <when-type-is class="com.googlecode.mgwt.ui.client.widget.main.MainResourceAppearance" />
   </replace-with>
 </module>
