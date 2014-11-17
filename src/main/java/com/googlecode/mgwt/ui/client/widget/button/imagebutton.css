@@ -2,6 +2,7 @@
   @external mgwt-ImageButton, mgwt-ImageButton-active;
   @external mgwt-ImageButton-disabled, mgwt-ImageButton-image;
   @external mgwt-ImageButton-small;
+  @external mgwt-ImageButton-reverse-order;
 }
 
 @def ICON_BACKGROUND_COLOR #454545;
@@ -24,6 +25,16 @@
   .mgwt-ImageButton {
     cursor: pointer;
   }
+}
+
+@if user.agent safari {
+  .mgwt-ImageButton-reverse-order {
+    -webkit-flex-direction: row-reverse;
+  }
+}
+
+.mgwt-ImageButton-reverse-order {
+  flex-direction: row-reverse;
 }
 
 .mgwt-ImageButton {
