@@ -81,6 +81,11 @@ public class WidgetList extends Composite implements HasWidgets, HasSelectionHan
     public HandlerRegistration addTapHandler(TapHandler handler) {
       return addHandler(handler, TapEvent.getType());
     }
+
+    @UiFactory
+    public WidgetListAppearance getAppearance() {
+      return appearance;
+    }
   }
 
   private static class Entry {
