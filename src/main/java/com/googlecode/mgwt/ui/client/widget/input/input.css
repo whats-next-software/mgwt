@@ -13,7 +13,6 @@
     -webkit-appearance: none;
     -webkit-user-select: text;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-user-modify: read-write-plaintext-only;
   }
 }
 
@@ -54,4 +53,8 @@
 
 .mgwt-InputBox-invalid::-webkit-input-placeholder {
   color: rgb(197, 3, 3);
+}
+
+.mgwt-TextBox-fix-white-background-bug-android43 {
+  -webkit-user-modify: read-write-plaintext-only;
 }
