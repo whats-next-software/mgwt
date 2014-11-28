@@ -3,6 +3,7 @@ package com.googlecode.mgwt.ui.client.widget.panel.scroll.impl;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationHandle;
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -23,12 +24,9 @@ import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchStartEvent;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -45,6 +43,7 @@ import com.googlecode.mgwt.dom.client.event.orientation.OrientationChangeEvent;
 import com.googlecode.mgwt.dom.client.event.orientation.OrientationChangeHandler;
 import com.googlecode.mgwt.dom.client.event.touch.TouchHandler;
 import com.googlecode.mgwt.ui.client.MGWT;
+import com.googlecode.mgwt.ui.client.TouchSupport;
 import com.googlecode.mgwt.ui.client.util.CssUtil;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.BeforeScrollEndEvent;
 import com.googlecode.mgwt.ui.client.widget.panel.scroll.BeforeScrollMoveEvent;
@@ -253,7 +252,7 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
   private int startY;
   private int pointX;
   private int pointY;
-  private long startTime;
+  private double startTime;
   private double touchesDist;
   private double lastScale;
   private boolean bounce;
@@ -337,7 +336,7 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
 
     this.fixedScrollbar = MGWT.getOsDetection().isAndroid() && !MGWT.getOsDetection().isAndroid4_4_OrHigher();
     this.hideScrollBar = true;
-    this.fadeScrollBar = MGWT.getOsDetection().isIOs() && CssUtil.has3d();
+    this.fadeScrollBar = (MGWT.getOsDetection().isIOs() || MGWT.getOsDetection().isWindowsPhone()) && CssUtil.has3d();
 
     // array for scrollbars
     this.scrollBar = new boolean[2];
@@ -661,7 +660,7 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
     int deltaY = touches.get(0).getPageY() - this.pointY;
     int newX = this.x + deltaX;
     int newY = this.y + deltaY;
-    long timeStamp = System.currentTimeMillis();
+    double timeStamp = Duration.currentTimeMillis();
 
     // fire onbeforescroll event
     fireEvent(new BeforeScrollMoveEvent(event));
@@ -762,7 +761,7 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
       return;
     }
 
-    long duration = System.currentTimeMillis() - this.startTime;
+    double duration = Duration.currentTimeMillis() - this.startTime;
     int newPosX = this.x;
     int newPosY = this.y;
     Momentum momentumX = Momentum.ZERO_MOMENTUM;
@@ -1069,7 +1068,7 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
       return;
     }
 
-    final long startTime = System.currentTimeMillis();
+    final double startTime = Duration.currentTimeMillis();
 
     final AnimationCallback animationCallback = new AnimationCallback() {
 
@@ -1116,7 +1115,7 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
 
   }
 
-  private Momentum momentum(int dist, long time, int maxDistUpper, int maxDistLower, int size) {
+  private Momentum momentum(int dist, double time, int maxDistUpper, int maxDistLower, int size) {
     double deceleration = 0.0006;
     double speed = ((double) (Math.abs(dist))) / time;
     double newDist = (speed * speed) / (2 * deceleration);
@@ -1584,7 +1583,7 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
     // clear old event handlers
     unbindStartEvent();
     unbindResizeEvent();
-    if (MGWT.getOsDetection().isDesktop()) {
+    if (TouchSupport.isTouchEventsEmulatedUsingMouseEvents()) {
       unbindMouseoutEvent();
       unbindMouseWheelEvent();
     }
@@ -1604,7 +1603,7 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
       if (isAttached()) {
         bindResizeEvent();
         bindStartEvent();
-        if (MGWT.getOsDetection().isDesktop()) {
+        if (TouchSupport.isTouchEventsEmulatedUsingMouseEvents()) {
           bindMouseoutEvent();
           bindMouseWheelEvent();
         }
@@ -1638,7 +1637,7 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
       // bind events
       bindResizeEvent();
       bindStartEvent();
-      if (MGWT.getOsDetection().isDesktop()) {
+      if (TouchSupport.isTouchEventsEmulatedUsingMouseEvents()) {
         bindMouseoutEvent();
         bindMouseWheelEvent();
       }
@@ -1763,30 +1762,16 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
 	 *
 	 */
   private void bindResizeEvent() {
-    if (!MGWT.getFormFactor().isDesktop()) {
-      orientationChangeRegistration = MGWT.addOrientationChangeHandler(new OrientationChangeHandler() {
+    orientationChangeRegistration = MGWT.addOrientationChangeHandler(new OrientationChangeHandler() {
 
-        @Override
-        public void onOrientationChanged(OrientationChangeEvent event) {
-          if (shouldHandleResize) {
-            resize();
-          }
-
+      @Override
+      public void onOrientationChanged(OrientationChangeEvent event) {
+        if (shouldHandleResize) {
+          resize();
         }
-      });
-    } else {
-      orientationChangeRegistration = Window.addResizeHandler(new ResizeHandler() {
-
-        @Override
-        public void onResize(ResizeEvent event) {
-          if (shouldHandleResize) {
-            resize();
-          }
-
-        }
-      });
-    }
-
+      }
+      
+    });
   }
 
   private void unbindResizeEvent() {
