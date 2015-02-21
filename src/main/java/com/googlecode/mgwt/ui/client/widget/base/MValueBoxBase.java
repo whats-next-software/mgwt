@@ -116,6 +116,11 @@ public class MValueBoxBase<T> extends Composite implements AutoDirectionHandler.
 
     main.add(box);
 
+    if (MGWT.getOsDetection().isAndroid4_3_orLower()) {
+      main.addStyleName(appearance.css().fixWhiteBackgroundBugOnAndroid43AndLower());
+      box.addStyleName(appearance.css().fixWhiteBackgroundBugOnAndroid43AndLower());
+    }
+
     ((HasSource) box).setSource(this);
     box.addBlurHandler(new BlurHandler() {
 
