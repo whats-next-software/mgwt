@@ -13,6 +13,8 @@
  */
 package com.googlecode.mgwt.ui.client.widget.panel.flex;
 
+import java.util.Iterator;
+
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
@@ -22,12 +24,9 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
 import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPropertyHelper.Alignment;
 import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPropertyHelper.Justification;
 import com.googlecode.mgwt.ui.client.widget.panel.flex.FlexPropertyHelper.Orientation;
-
-import java.util.Iterator;
 
 /**
  * A FlexPanel uses the flexible box model to layout its children.
@@ -122,6 +121,9 @@ public class FlexPanel extends Composite implements HasWidgets.ForIsWidget, Inde
     FlexPropertyHelper.setJustification(getElement(), value);
   }
 
+  public void setFlex(double flex) {
+	FlexPropertyHelper.setFlex(getElement(), flex);
+  }
 
   public void clearAlignment() {
     FlexPropertyHelper.clearAlignment(getElement());
