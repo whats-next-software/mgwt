@@ -15,8 +15,13 @@
  */
 package com.googlecode.mgwt.ui.client.widget.input;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.user.client.ui.DoubleBox;
+import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.text.client.DoubleParser;
+import com.google.gwt.text.shared.AbstractRenderer;
+import com.google.gwt.text.shared.Renderer;
+import com.google.gwt.user.client.ui.ValueBox;
 
 import com.googlecode.mgwt.ui.client.widget.base.MValueBoxBase;
 
@@ -27,11 +32,13 @@ import com.googlecode.mgwt.ui.client.widget.base.MValueBoxBase;
  */
 public class MDoubleBox extends MValueBoxBase<Double> {
 
-  private static class SDoubleBox extends DoubleBox implements HasSource {
+  private static class SDoubleBox extends ValueBox<Double> implements HasSource {
 
     private Object source;
 
     public SDoubleBox() {
+      super(Document.get().createTextInputElement(), DoubleRenderer.instance(),
+            DoubleParser.instance());
       setStylePrimaryName("gwt-DoubleBox");
     }
 
@@ -53,5 +60,31 @@ public class MDoubleBox extends MValueBoxBase<Double> {
     super(appearance, new SDoubleBox());
     impl.setType(box.getElement(), "number");
     addStyleName(appearance.css().textBox());
+  }
+
+  public static class DoubleRenderer extends AbstractRenderer<Double> {
+    private static DoubleRenderer INSTANCE;
+    private static NumberFormat formatter = NumberFormat.getFormat("#.###");
+
+    /**
+     * Returns the instance.
+     */
+    public static Renderer<Double> instance() {
+      if (INSTANCE == null) {
+        INSTANCE = new DoubleRenderer();
+      }
+      return INSTANCE;
+    }
+
+    protected DoubleRenderer() {
+    }
+
+    public String render(Double object) {
+      if (object == null) {
+        return "";
+      }
+
+      return formatter.format(object);
+    }
   }
 }
