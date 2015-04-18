@@ -75,11 +75,11 @@ public final class FlexPropertyHelper {
 
   public static void setFlex(Element el, double flex) {
     /* iOS < 7 && Android < 4.4*/
-    el.getStyle().setProperty("WebkitBoxFlex", Double.toString(flex));
+    el.getStyle().setProperty("WebkitBoxFlexGrow", Double.toString(flex));
 
-    el.getStyle().setProperty("MozFlex", Double.toString(flex));
-    el.getStyle().setProperty("WebkitFlex", Double.toString(flex));
-    el.getStyle().setProperty("flex", Double.toString(flex));
+    el.getStyle().setProperty("MozFlexGrow", Double.toString(flex));
+    el.getStyle().setProperty("WebkitFlexGrow", Double.toString(flex));
+    el.getStyle().setProperty("flexGrow", Double.toString(flex));
   }
 
   private static void setFlexProperty(Element el, String name, String value) {
