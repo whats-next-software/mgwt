@@ -18,6 +18,7 @@ package com.googlecode.mgwt.dom.client.event.tap;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.shared.GwtEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCopy;
 
 /**
  * TapEvent is considered an activation event something like a normal
@@ -29,12 +30,12 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TapEvent extends GwtEvent<TapHandler> {
 
 	private static final Type<TapHandler> TYPE = new Type<TapHandler>();
-	private final Touch touch;
+	private final TouchCopy touchCopy;
 	private final Element targetElement;
 
 	 public TapEvent(Object source, Element targetElement, Touch touch) {
 	    this.targetElement = targetElement;
-	    this.touch = touch;
+	    this.touchCopy = TouchCopy.copy(touch);
 	    setSource(source);
 	  }
 
@@ -53,20 +54,28 @@ public class TapEvent extends GwtEvent<TapHandler> {
 		return TYPE;
 	}
 
-	/**
-	 * Get access to other useful position information related to the tap event
-	 * @return
-	 */
-	public Touch getTouch() {
-		return touch;
-	}
-
   public int getStartX() {
-    return touch.getPageX();
+    return touchCopy.getPageX();
   }
 
   public int getStartY() {
-    return touch.getPageY();
+    return touchCopy.getPageY();
+  }
+
+  public int getClientX() {
+    return touchCopy.getClientX();
+  }
+
+  public int getClientY() {
+    return touchCopy.getClientY();
+  }
+
+  public int getScreenX() {
+    return touchCopy.getScreenX();
+  }
+
+  public int getScreenY() {
+    return touchCopy.getScreenY();
   }
 
   /**

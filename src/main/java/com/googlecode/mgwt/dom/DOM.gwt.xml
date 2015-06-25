@@ -61,12 +61,9 @@
     <define-property name="mgwt.density" values="mid, high, xhigh" />
     <property-provider name="mgwt.density"><![CDATA[
         if (!window.devicePixelRatio) {
-          try {
-            if ('deviceXDPI' in screen) {
-              window.devicePixelRatio = screen.deviceXDPI / screen.logicalXDPI;
-            }
+          if ('deviceXDPI' in screen) {
+            window.devicePixelRatio = screen.deviceXDPI / screen.logicalXDPI;
           }
-          catch(e) {}
         }
         if (!window.devicePixelRatio) {
           return 'mid';

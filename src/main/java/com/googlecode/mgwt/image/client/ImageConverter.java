@@ -31,6 +31,14 @@ public class ImageConverter {
     CanvasPixelArray canvasPixelArray;
   }
 
+  private interface LoadImageCallback{
+    public void onSuccess(ImageElement imageElement);
+  }
+
+  public interface ImageConverterCallback{
+    public void onSuccess(ImageResource imageResource);
+  }
+
   private class ConvertedImageResource implements ImageResource {
 
     private final String dataUrl;
@@ -122,43 +130,31 @@ public class ImageConverter {
     final int width = resource.getWidth();
 
     loadImage(resource.getSafeUri().asString(), width, height, new LoadImageCallback() {
-      @Override
-      public void onFailure(Throwable caught)
-      {
-        imageConverterCallback.onFailure(caught);
-      }
 
       @Override
-      public void onSuccess(ImageElement imageElement)
-      {
-        try
-        {
-          Canvas canvas = Canvas.createIfSupported();
-          canvas.getElement().setPropertyInt("height", height);
-          canvas.getElement().setPropertyInt("width", width);
+      public void onSuccess(ImageElement imageElement) {
+        
+        Canvas canvas = Canvas.createIfSupported();
+        canvas.getElement().setPropertyInt("height", height);
+        canvas.getElement().setPropertyInt("width", width);
 
-          Context2d context = canvas.getContext2d();
-          context.drawImage(imageElement, 0, 0);
-          ImageData imageData = context.getImageData(0, 0, width, height);
+        Context2d context = canvas.getContext2d();
+        context.drawImage(imageElement, 0, 0);
+        ImageData imageData = context.getImageData(0, 0, width, height);
 
-          CanvasPixelArray canvasPixelArray = imageData.getData();
+        CanvasPixelArray canvasPixelArray = imageData.getData();
 
-          for (int i = 0; i < canvasPixelArray.getLength(); i += 4) {
-            canvasPixelArray.set(i, red);
-            canvasPixelArray.set(i + 1, green);
-            canvasPixelArray.set(i + 2, blue);
-            canvasPixelArray.set(i + 3,
-            canvasPixelArray.get(i + 3));
-          }
-          context.putImageData(imageData, 0, 0);
-          imageConverterCallback.onSuccess(new ConvertedImageResource(
-                  canvas.toDataUrl("image/png"), resource.getWidth(),
-                  resource.getHeight()));
+        for (int i = 0; i < canvasPixelArray.getLength(); i += 4) {
+          canvasPixelArray.set(i, red);
+          canvasPixelArray.set(i + 1, green);
+          canvasPixelArray.set(i + 2, blue);
+          canvasPixelArray.set(i + 3,
+          canvasPixelArray.get(i + 3));
         }
-        catch(Throwable e)
-        {
-          this.onFailure(e);
-        }
+        context.putImageData(imageData, 0, 0);
+        imageConverterCallback.onSuccess(new ConvertedImageResource(
+                canvas.toDataUrl("image/png"), resource.getWidth(),
+                resource.getHeight()));
       }
     });
   }
@@ -169,14 +165,12 @@ public class ImageConverter {
     img.height = height;
     img.src = dataUrl;
     img.onload = $entry(function(){
-      callback.@com.googlecode.mgwt.image.client.LoadImageCallback::onSuccess(Lcom/google/gwt/dom/client/ImageElement;)(img);
+      callback.@com.googlecode.mgwt.image.client.ImageConverter.LoadImageCallback::onSuccess(Lcom/google/gwt/dom/client/ImageElement;)(img);
     });
-    img.onerror = $entry(function(e){
-      callback.@com.googlecode.mgwt.image.client.LoadImageCallback::onFailure(Ljava/lang/Throwable;)(e);
-    });
-    img.onabort = $entry(function(e){
-      callback.@com.googlecode.mgwt.image.client.LoadImageCallback::onFailure(Ljava/lang/Throwable;)(e);
-    });
+    img.onerror = function(e){
+      @com.google.gwt.core.client.GWT::reportUncaughtException(Ljava/lang/Throwable;)(e);
+      return true;
+    };
   }-*/;
 
   private String maybeExpandColor(String color) {

@@ -24,9 +24,12 @@ import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEvent;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,7 +38,6 @@ import com.googlecode.mgwt.collection.shared.LightArray;
 import com.googlecode.mgwt.collection.shared.LightArrayInt;
 import com.googlecode.mgwt.dom.client.event.animation.TransitionEndEvent;
 import com.googlecode.mgwt.dom.client.event.animation.TransitionEndHandler;
-import com.googlecode.mgwt.dom.client.event.mouse.SimulatedTouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.mouse.SimulatedTouchMoveEvent;
 import com.googlecode.mgwt.dom.client.event.mouse.SimulatedTouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.mouse.TouchStartToMouseDownHandler;
@@ -1762,16 +1764,30 @@ public class ScrollPanelTouchImpl extends ScrollPanelImpl {
 	 *
 	 */
   private void bindResizeEvent() {
-    orientationChangeRegistration = MGWT.addOrientationChangeHandler(new OrientationChangeHandler() {
+    if (!MGWT.getFormFactor().isDesktop()) {
+      orientationChangeRegistration = MGWT.addOrientationChangeHandler(new OrientationChangeHandler() {
 
-      @Override
-      public void onOrientationChanged(OrientationChangeEvent event) {
-        if (shouldHandleResize) {
-          resize();
+        @Override
+        public void onOrientationChanged(OrientationChangeEvent event) {
+          if (shouldHandleResize) {
+            resize();
+          }
+
         }
-      }
-      
-    });
+      });
+    } else {
+      orientationChangeRegistration = Window.addResizeHandler(new ResizeHandler() {
+
+        @Override
+        public void onResize(ResizeEvent event) {
+          if (shouldHandleResize) {
+            resize();
+          }
+
+        }
+      });
+    }
+
   }
 
   private void unbindResizeEvent() {

@@ -153,11 +153,6 @@ public class MGWT {
 
     if (TouchSupport.isTouchEventsEmulatedUsingPointerEvents())
     {
-      MetaElement ieCompatible = Document.get().createMetaElement();
-      ieCompatible.setHttpEquiv("x-ua-compatible");
-      ieCompatible.setContent("IE=10");
-      head.appendChild(ieCompatible);
-      
       MetaElement tapHighlight = Document.get().createMetaElement();
       tapHighlight.setName("msapplication-tap-highlight");
       tapHighlight.setContent("no");
@@ -313,16 +308,36 @@ public class MGWT {
     return elementsByTagName.getItem(0);
   }
 
-  private static native void setupPreventScrolling(Element el)/*-{
-    var func = function(event) {
-      var tagName = event.target.tagName;
-      if ((tagName == 'INPUT') || (tagName == 'SELECT') || (tagName == 'TEXTAREA'))  {
-        return true;
+  /**
+   * Only call preventDefault on the first TouchMove event. It stops the screen bounce
+   * and allows other scrollable widgets to function with their default behaviour e.g MTextArea
+   * @param el
+   */
+  private static native void setupPreventScrolling(Element el) /*-{
+    var onGoingTouches = {};
+    
+    var handleTouchMove = function(touchMoveEvent) {
+      var touches = touchMoveEvent.changedTouches;
+      for (var i=0; i < touches.length; i++) {
+        if (!(touches[i].identifier in onGoingTouches)) {
+          onGoingTouches[touches[i].identifier] = "";
+          touchMoveEvent.preventDefault();
+        }
       }
-      event.preventDefault();
-      return false;
     };
-    el.ontouchmove = func;
+    
+    var cleanup = function(event) {
+      var touches = event.changedTouches;
+      for (var i=0; i < touches.length; i++) {
+        if (touches[i].identifier in onGoingTouches) {
+          delete onGoingTouches[touches[i].identifier];
+        }
+      }
+    };
+    
+    el.addEventListener("touchend", cleanup, false);
+    el.addEventListener("touchcancel", cleanup, false);
+    el.addEventListener("touchmove", handleTouchMove, false);
   }-*/;
 
   private static void setupPreventScrollingIE10(Element el) {

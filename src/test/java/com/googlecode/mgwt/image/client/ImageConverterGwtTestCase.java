@@ -21,6 +21,7 @@ import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.googlecode.mgwt.image.client.ImageConverter.ImageConverterCallback;
 
 public class ImageConverterGwtTestCase extends GWTTestCase {
 
@@ -46,11 +47,6 @@ public class ImageConverterGwtTestCase extends GWTTestCase {
     {
       public ImageResource convertedResource = null;
       
-      @Override
-      public void onFailure(Throwable caught)
-      {
-      }
-
       @Override
       public void onSuccess(ImageResource convertedResource)
       {

@@ -13,6 +13,7 @@
  */
 package com.googlecode.mgwt.dom.client.event.animation;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.DomEvent;
 
 /**
@@ -63,5 +64,12 @@ public class TransitionEndEvent extends DomEvent<TransitionEndHandler> {
     handler.onTransitionEnd(this);
 
   }
+  
+  public String getPropertyName() {
+    return getPropertyName(getNativeEvent());
+  }
 
+  private final native String getPropertyName(JavaScriptObject event) /*-{
+    return event.propertyName;
+  }-*/;
 }

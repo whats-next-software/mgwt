@@ -19,7 +19,7 @@ public class CssUtilIE10Impl implements CssUtilImpl {
     String cssText = "translate3d(" + x + "px," + y + "px,0px)";
     _translate(el, cssText);
   }
-
+  
   @Override
   public native void setDelay(Element el, int milliseconds) /*-{
     el.style.transitionDelay = milliseconds + "ms";
@@ -35,7 +35,7 @@ public class CssUtilIE10Impl implements CssUtilImpl {
     el.style.transitionDuration = time + "ms";
   }-*/;
 
-  private native void _translate(Element el, String css)/*-{
+  private native void _translate(Element el, String css) /*-{
     el.style.transform = css;
   }-*/;
 
@@ -70,7 +70,7 @@ public class CssUtilIE10Impl implements CssUtilImpl {
     return new int[] {array.get(0), array.get(1)};
   }
 
-  private native JsArrayInteger getPositionFromTransform(Element el)/*-{
+  private native JsArrayInteger getPositionFromTransform(Element el) /*-{
     var matrix = getComputedStyle(el, null)['transform'].replace(
         /[^0-9-.,]/g, '').split(',');
     if (matrix.length === 6) {
@@ -87,12 +87,12 @@ public class CssUtilIE10Impl implements CssUtilImpl {
 
   @Override
   public native int getTopPositionFromCssPosition(Element element) /*-{
-		return getComputedStyle(element, null).top.replace(/[^0-9-]/g, '') * 1;
+    return getComputedStyle(element, null).top.replace(/[^0-9-]/g, '') * 1;
   }-*/;
 
   @Override
-  public native int getLeftPositionFromCssPosition(Element element)/*-{
-		return getComputedStyle(element, null).left.replace(/[^0-9-]/g, '') * 1;
+  public native int getLeftPositionFromCssPosition(Element element) /*-{
+    return getComputedStyle(element, null).left.replace(/[^0-9-]/g, '') * 1;
   }-*/;
 
   @Override

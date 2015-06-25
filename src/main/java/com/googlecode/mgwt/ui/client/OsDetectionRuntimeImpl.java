@@ -120,12 +120,9 @@ public class OsDetectionRuntimeImpl implements OsDetection {
 
   native double getDevicePixelRatio() /*-{
     if (!$wnd.devicePixelRatio) {
-      try {
-        if ('deviceXDPI' in $wnd.screen) {
-          $wnd.devicePixelRatio = $wnd.screen.deviceXDPI / $wnd.screen.logicalXDPI;
-        }
+      if ('deviceXDPI' in $wnd.screen) {
+        $wnd.devicePixelRatio = $wnd.screen.deviceXDPI / $wnd.screen.logicalXDPI;
       }
-      catch(e) {}
     }
     return $wnd.devicePixelRatio || 1;
   }-*/;

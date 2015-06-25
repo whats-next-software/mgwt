@@ -20,7 +20,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.resources.client.ImageResource;
 import com.googlecode.mgwt.image.client.ImageConverter;
-import com.googlecode.mgwt.image.client.ImageConverterCallback;
+import com.googlecode.mgwt.image.client.ImageConverter.ImageConverterCallback;
 import com.googlecode.mgwt.ui.client.MGWT;
 
 public class IconHandler {
@@ -92,10 +92,6 @@ public class IconHandler {
       }
 
       converter.convert(icon, color, new ImageConverterCallback() {
-
-        @Override
-        public void onFailure(Throwable caught) {
-        }
 
         @Override
         public void onSuccess(ImageResource convertImageResource) {

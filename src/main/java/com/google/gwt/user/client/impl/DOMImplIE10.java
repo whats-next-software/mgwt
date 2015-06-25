@@ -35,6 +35,8 @@ public class DOMImplIE10 extends DOMImplIE9 {
    * even when the pointer has moved off the element up until MSPointerUp has occurred.
    * 
    *  Do not do pointer capture on input or textarea elements, all sorts of problems arise if you do!
+   *  For example if you type into a password field you cannot set the cursor to the end of
+   *  the text when re-entering it and so you cannot edit your password
    */
   private native static void capturePointerEvents() /*-{
       $wnd.addEventListener('MSPointerDown',

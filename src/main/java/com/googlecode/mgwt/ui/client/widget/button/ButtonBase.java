@@ -64,12 +64,11 @@ public abstract class ButtonBase extends TouchWidget implements HasText {
   }
 
   @Override
-  protected void setElement(Element elem)
-  {
+  protected void setElement(Element elem) {
     super.setElement(elem);
     
-    if (!defaultHandlersAdded)
-    {
+    if (!defaultHandlersAdded) {
+    
       addTouchHandler(new TouchHandler() {
 
         @Override

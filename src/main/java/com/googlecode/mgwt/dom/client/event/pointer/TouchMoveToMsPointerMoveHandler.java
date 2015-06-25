@@ -21,33 +21,17 @@ import com.google.gwt.event.dom.client.TouchMoveHandler;
  * Convert TouchMoveHandlers to MsPointerMoveHandlers for pointer devices
  *
  */
-public class TouchMoveToMsPointerMoveHandler implements MsPointerMoveHandler, MsPointerDownHandler, MsPointerUpHandler {
+public class TouchMoveToMsPointerMoveHandler implements MsPointerMoveHandler {
 
-  private boolean ignoreEvent;
 	private final TouchMoveHandler touchMoveHandler;
 
 	public TouchMoveToMsPointerMoveHandler(TouchMoveHandler touchMoveHandler) {
 		this.touchMoveHandler = touchMoveHandler;
-    ignoreEvent = true;
 	}
 
 	@Override
   public void onPointerMove(MsPointerMoveEvent event) {
-    if (ignoreEvent)
-      return;
 		touchMoveHandler.onTouchMove(new SimulatedTouchMoveEvent(event));
 	}
-
-  @Override
-  public void onPointerUp(MsPointerUpEvent event)
-  {
-    ignoreEvent = true;
-  }
-
-  @Override
-  public void onPointerDown(MsPointerDownEvent event)
-  {
-    ignoreEvent = false;
-  }
 
 }
