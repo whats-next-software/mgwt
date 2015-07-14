@@ -21,6 +21,12 @@
   }
 }
 
+@if user.agent ie10 {
+  .mgwt-ImageButton {
+    display: -ms-flexbox;
+  }
+}
+
 @if mgwt.formfactor desktop {
   .mgwt-ImageButton {
     cursor: pointer;

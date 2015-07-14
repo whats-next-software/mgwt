@@ -78,7 +78,17 @@ public class OsDetectionRuntimeImpl implements OsDetection {
 
   @Override
   public boolean isPhone() {
-    return isIPhone() || isRetina() || isAndroidPhone();
+    return isIPhone() || isRetina() || isAndroidPhone() || isWindowsPhone();
+  }
+
+  @Override
+  public boolean isWindowsPhone()
+  {
+    String userAgent = getUserAgent();
+    if (userAgent.contains("windows phone 8")) {
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -109,6 +119,11 @@ public class OsDetectionRuntimeImpl implements OsDetection {
   }-*/;
 
   native double getDevicePixelRatio() /*-{
+    if (!$wnd.devicePixelRatio) {
+      if ('deviceXDPI' in $wnd.screen) {
+        $wnd.devicePixelRatio = $wnd.screen.deviceXDPI / $wnd.screen.logicalXDPI;
+      }
+    }
     return $wnd.devicePixelRatio || 1;
   }-*/;
 
@@ -140,4 +155,5 @@ public class OsDetectionRuntimeImpl implements OsDetection {
 
     return false;
   }
+
 }
