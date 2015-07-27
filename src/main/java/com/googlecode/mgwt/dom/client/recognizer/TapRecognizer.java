@@ -94,7 +94,7 @@ public class TapRecognizer implements TouchHandler {
 	@Override
 	public void onTouchEnd(TouchEndEvent event) {
 		if (!hasMoved && !touchCanceled) {
-	    Touch touch = event.getChangedTouches().get(0);
+      Touch touch = event.getChangedTouches().get(0);
 			TapEvent tapEvent = new TapEvent(source, targetElement, touch);
 			getEventPropagator().fireEvent(source, tapEvent);
 		}
