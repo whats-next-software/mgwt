@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.shared.HasHandlers;
 
 import com.googlecode.mgwt.dom.client.event.tap.TapEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCopy;
 import com.googlecode.mgwt.dom.client.event.touch.TouchHandler;
 
 /**
@@ -44,9 +45,7 @@ public class TapRecognizer implements TouchHandler {
 
   private boolean hasMoved;
 
-  private int start_x;
-
-  private int start_y;
+  private TouchCopy touchStartCopy;
 
   private Element targetElement;
 
@@ -79,14 +78,13 @@ public class TapRecognizer implements TouchHandler {
       targetElement = null;
     }
     Touch touch = event.getTouches().get(0);
-    start_x = touch.getPageX();
-    start_y = touch.getPageY();
+    touchStartCopy = TouchCopy.copy(touch);
   }
 
   @Override
   public void onTouchMove(TouchMoveEvent event) {
     Touch touch = event.getTouches().get(0);
-    if (Math.abs(touch.getPageX() - start_x) > distance || Math.abs(touch.getPageY() - start_y) > distance) {
+    if (Math.abs(touch.getPageX() - touchStartCopy.getPageX()) > distance || Math.abs(touch.getPageY() - touchStartCopy.getPageY()) > distance) {
       hasMoved = true;
     }
   }
@@ -94,8 +92,7 @@ public class TapRecognizer implements TouchHandler {
   @Override
   public void onTouchEnd(TouchEndEvent event) {
     if (!hasMoved && !touchCanceled) {
-      Touch touch = event.getChangedTouches().get(0);
-      TapEvent tapEvent = new TapEvent(source, targetElement, touch);
+      TapEvent tapEvent = new TapEvent(source, targetElement, touchStartCopy);
       getEventPropagator().fireEvent(source, tapEvent);
     }
   }
