@@ -50,7 +50,7 @@ public class OsDetectionRuntimeImpl implements OsDetection {
 
   @Override
   public boolean isDesktop() {
-    return !isIOs() && !isAndroid();
+    return !isIOs() && !isAndroid() && !isWindowsPhone();
   }
 
   @Override
