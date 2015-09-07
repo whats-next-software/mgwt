@@ -10,7 +10,7 @@ public class OsDetectionRuntimeImpl implements OsDetection {
   @Override
   public boolean isIPhone() {
     String userAgent = getUserAgent();
-    if (userAgent.contains("iphone") && getDevicePixelRatio() < 2) {
+    if (!isWindowsPhone() && userAgent.contains("iphone") && getDevicePixelRatio() < 2) {
       return true;
     }
     return false;
@@ -33,7 +33,7 @@ public class OsDetectionRuntimeImpl implements OsDetection {
   @Override
   public boolean isRetina() {
     String userAgent = getUserAgent();
-    if (userAgent.contains("iphone") && getDevicePixelRatio() >= 2) {
+    if (!isWindowsPhone() && userAgent.contains("iphone") && getDevicePixelRatio() >= 2) {
       return true;
     }
     return false;
@@ -61,7 +61,7 @@ public class OsDetectionRuntimeImpl implements OsDetection {
   @Override
   public boolean isAndroidTablet() {
     String userAgent = getUserAgent();
-    if (userAgent.contains("android") && !userAgent.contains("mobile")) {
+    if (!isWindowsPhone() && userAgent.contains("android") && !userAgent.contains("mobile")) {
       return true;
     }
     return false;
@@ -70,7 +70,7 @@ public class OsDetectionRuntimeImpl implements OsDetection {
   @Override
   public boolean isAndroidPhone() {
     String userAgent = getUserAgent();
-    if (userAgent.contains("android") && userAgent.contains("mobile")) {
+    if (!isWindowsPhone() && userAgent.contains("android") && userAgent.contains("mobile")) {
       return true;
     }
     return false;

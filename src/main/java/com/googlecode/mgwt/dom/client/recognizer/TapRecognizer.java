@@ -83,18 +83,22 @@ public class TapRecognizer implements TouchHandler {
 
   @Override
   public void onTouchMove(TouchMoveEvent event) {
-    Touch touch = event.getTouches().get(0);
-    if (Math.abs(touch.getPageX() - touchStartCopy.getPageX()) > distance || Math.abs(touch.getPageY() - touchStartCopy.getPageY()) > distance) {
-      hasMoved = true;
+    if (touchStartCopy != null) {
+      Touch touch = event.getTouches().get(0);
+      if (Math.abs(touch.getPageX() - touchStartCopy.getPageX()) > distance || Math.abs(touch.getPageY() - touchStartCopy.getPageY()) > distance) {
+        hasMoved = true;
+        touchStartCopy = null;
+      }
     }
   }
 
   @Override
   public void onTouchEnd(TouchEndEvent event) {
-    if (!hasMoved && !touchCanceled) {
+    if (!hasMoved && !touchCanceled && (touchStartCopy != null)) {
       TapEvent tapEvent = new TapEvent(source, targetElement, touchStartCopy);
       getEventPropagator().fireEvent(source, tapEvent);
     }
+    touchStartCopy = null;
   }
 
   @Override
