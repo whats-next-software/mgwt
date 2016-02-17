@@ -111,7 +111,7 @@ public class CssUtilIE10Impl implements CssUtilImpl {
   }-*/;
 
   @Override
-  public native void setTransistionTimingFunction(Element element, String string) /*-{
+  public native void setTransistionTimingFunction(Element el, String string) /*-{
     el.transitionTimingFunction = string;
   }-*/;
 
