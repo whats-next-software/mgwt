@@ -17,6 +17,7 @@ package com.googlecode.mgwt.dom.client.event.tap;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.GwtEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchCopy;
 
 /**
  * TapEvent is considered an activation event something like a normal
@@ -28,16 +29,14 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TapEvent extends GwtEvent<TapHandler> {
 
 	private static final Type<TapHandler> TYPE = new Type<TapHandler>();
-	private final int startX;
-	private final int startY;
+	private final TouchCopy touchCopy;
 	private final Element targetElement;
 
-	public TapEvent(Object source, Element targetElement, int startX, int startY) {
-	  this.targetElement = targetElement;
-    this.startX = startX;
-    this.startY = startY;
-    setSource(source);
-  }
+	 public TapEvent(Object source, Element targetElement, TouchCopy touchCopy) {
+	    this.targetElement = targetElement;
+	    this.touchCopy = touchCopy;
+	    setSource(source);
+	  }
 
 	@Override
 	public com.google.gwt.event.shared.GwtEvent.Type<TapHandler> getAssociatedType() {
@@ -54,15 +53,31 @@ public class TapEvent extends GwtEvent<TapHandler> {
 		return TYPE;
 	}
 
-	public int getStartX() {
-		return startX;
-	}
+  public int getStartX() {
+    return touchCopy.getPageX();
+  }
 
-	public int getStartY() {
-		return startY;
-	}
+  public int getStartY() {
+    return touchCopy.getPageY();
+  }
 
-	/**
+  public int getClientX() {
+    return touchCopy.getClientX();
+  }
+
+  public int getClientY() {
+    return touchCopy.getClientY();
+  }
+
+  public int getScreenX() {
+    return touchCopy.getScreenX();
+  }
+
+  public int getScreenY() {
+    return touchCopy.getScreenY();
+  }
+
+  /**
 	 * Returns the element that was the actual target of the Tap event.
 	 */
 	public Element getTargetElement() {

@@ -19,7 +19,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 
 /**
- * The apperance for all ImageButtons.
+ * The appearance for all ImageButtons.
  */
 public interface ImageButtonAppearance extends ButtonBaseAppearance {
 
@@ -43,6 +43,9 @@ public interface ImageButtonAppearance extends ButtonBaseAppearance {
 
     @ClassName("mgwt-ImageButton-small")
     String small();
+
+    @ClassName("mgwt-ImageButton-reverse-order")
+    String reverseOrder();
 
     String ICON_BACKGROUND_COLOR();
 

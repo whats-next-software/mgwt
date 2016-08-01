@@ -18,7 +18,6 @@ package com.googlecode.mgwt.ui.client.widget.input;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.ui.TextBox;
-
 import com.googlecode.mgwt.ui.client.widget.base.MTextBoxBase;
 
 /**
@@ -43,7 +42,7 @@ public class MTextBox extends MTextBoxBase {
 	}
 
 	public MTextBox() {
-		this(InputApperanceHolder.DEFAULT_APPERAERANCE);
+		this(InputAppearanceHolder.DEFAULT_APPEARANCE);
 	}
 
 	public MTextBox(InputAppearance appearance) {

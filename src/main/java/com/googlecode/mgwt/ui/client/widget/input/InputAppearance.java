@@ -37,6 +37,9 @@ public interface InputAppearance {
 
     @ClassName("mgwt-InputBox-invalid")
     String invalid();
+
+    @ClassName("mgwt-TextBox-fix-white-background-bug-android43")
+    String fixWhiteBackgroundBugOnAndroid43AndLower();
   }
 
   InputCss css();

@@ -31,6 +31,14 @@ public class ImageConverter {
     CanvasPixelArray canvasPixelArray;
   }
 
+  private interface LoadImageCallback{
+    public void onSuccess(ImageElement imageElement);
+  }
+
+  public interface ImageConverterCallback{
+    public void onSuccess(ImageResource imageResource);
+  }
+
   private class ConvertedImageResource implements ImageResource {
 
     private final String dataUrl;
@@ -100,7 +108,7 @@ public class ImageConverter {
     }
   }
 
-  public ImageResource convert(ImageResource resource, String color) {
+  public void convert(final ImageResource resource, String color, final ImageConverterCallback imageConverterCallback) {
 
     if (color == null) {
       throw new IllegalArgumentException();
@@ -110,49 +118,75 @@ public class ImageConverter {
       throw new IllegalArgumentException();
     }
 
-    int hexColor = Integer.parseInt(color.substring(1), 16);
+    color = maybeExpandColor(color);
 
-    int red = hexColor >> 16 & 0xFF;
-    int green = hexColor >> 8 & 0xFF;
-    int blue = hexColor & 0xFF;
+    final int hexColor = Integer.parseInt(color.substring(1), 16);
 
-    int height = resource.getHeight();
-    int width = resource.getWidth();
+    final int red = hexColor >> 16 & 0xFF;
+    final int green = hexColor >> 8 & 0xFF;
+    final int blue = hexColor & 0xFF;
 
-    ImageElement imageElement = loadImage(resource.getSafeUri().asString(),
-        width, height);
+    final int height = resource.getHeight();
+    final int width = resource.getWidth();
 
-    Canvas canvas = Canvas.createIfSupported();
-    canvas.getElement().setPropertyInt("height", height);
-   canvas.getElement().setPropertyInt("width", width);
+    loadImage(resource.getSafeUri().asString(), width, height, new LoadImageCallback() {
 
-    Context2d context = canvas.getContext2d();
-    context.drawImage(imageElement, 0, 0);
-    ImageData imageData = context.getImageData(0, 0, width,
-        height);
+      @Override
+      public void onSuccess(ImageElement imageElement) {
+        
+        Canvas canvas = Canvas.createIfSupported();
+        canvas.getElement().setPropertyInt("height", height);
+        canvas.getElement().setPropertyInt("width", width);
 
-    CanvasPixelArray canvasPixelArray = imageData.getData();
+        Context2d context = canvas.getContext2d();
+        context.drawImage(imageElement, 0, 0);
+        ImageData imageData = context.getImageData(0, 0, width, height);
 
-    for (int i = 0; i < canvasPixelArray.getLength(); i += 4) {
-      canvasPixelArray.set(i, red);
-      canvasPixelArray.set(i + 1, green);
-      canvasPixelArray.set(i + 2, blue);
-      canvasPixelArray.set(i + 3,
-      canvasPixelArray.get(i + 3));
-    }
-    context.putImageData(imageData, 0, 0);
+        CanvasPixelArray canvasPixelArray = imageData.getData();
 
-
-    return new ConvertedImageResource(
-        canvas.toDataUrl("image/png"), resource.getWidth(),
-        resource.getHeight());
+        for (int i = 0; i < canvasPixelArray.getLength(); i += 4) {
+          canvasPixelArray.set(i, red);
+          canvasPixelArray.set(i + 1, green);
+          canvasPixelArray.set(i + 2, blue);
+          canvasPixelArray.set(i + 3,
+          canvasPixelArray.get(i + 3));
+        }
+        context.putImageData(imageData, 0, 0);
+        imageConverterCallback.onSuccess(new ConvertedImageResource(
+                canvas.toDataUrl("image/png"), resource.getWidth(),
+                resource.getHeight()));
+      }
+    });
   }
 
-  protected native ImageElement loadImage(String dataUrl, int width, int height) /*-{
+  protected native void loadImage(String dataUrl, int width, int height, LoadImageCallback callback) /*-{
     var img = new Image();
     img.width = width;
     img.height = height;
     img.src = dataUrl;
-    return img;
+    img.onload = $entry(function(){
+      callback.@com.googlecode.mgwt.image.client.ImageConverter.LoadImageCallback::onSuccess(Lcom/google/gwt/dom/client/ImageElement;)(img);
+    });
+    img.onerror = function(e){
+      @com.google.gwt.core.client.GWT::reportUncaughtException(Ljava/lang/Throwable;)(e);
+      return true;
+    };
   }-*/;
+
+  private String maybeExpandColor(String color) {
+
+    if (color.length() != 4) {
+      return color;
+    }
+
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("#");
+    stringBuilder.append(color.charAt(1));
+    stringBuilder.append(color.charAt(1));
+    stringBuilder.append(color.charAt(2));
+    stringBuilder.append(color.charAt(2));
+    stringBuilder.append(color.charAt(3));
+    stringBuilder.append(color.charAt(3));
+    return stringBuilder.toString();
+  }
 }

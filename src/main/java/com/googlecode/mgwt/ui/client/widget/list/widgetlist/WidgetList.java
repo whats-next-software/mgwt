@@ -18,6 +18,7 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.uibinder.client.UiChild;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -79,6 +80,11 @@ public class WidgetList extends Composite implements HasWidgets, HasSelectionHan
     @Override
     public HandlerRegistration addTapHandler(TapHandler handler) {
       return addHandler(handler, TapEvent.getType());
+    }
+
+    @UiFactory
+    public WidgetListAppearance getAppearance() {
+      return appearance;
     }
   }
 
@@ -221,6 +227,7 @@ public class WidgetList extends Composite implements HasWidgets, HasSelectionHan
     }
   }
 
+  @UiChild(limit = 1, tagname = "header")
   public void setHeader(Widget header) {
     headerContainer.setVisible(header != null);
     headerContainer.clear();

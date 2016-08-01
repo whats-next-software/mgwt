@@ -20,25 +20,59 @@ import com.google.gwt.dom.client.Touch;
 public class TouchCopy {
 
   public static TouchCopy copy(Touch touch) {
-    return new TouchCopy(touch.getPageX(), touch.getPageY(), touch.getIdentifier());
+    return new TouchCopy(touch);
   }
 
-  private final int x;
-  private final int y;
+  private final int pageX;
+  private final int pageY;
+  private final int clientX;
+  private final int clientY;
+  private final int screenX;
+  private final int screenY;
   private final int id;
 
-  public TouchCopy(int x, int y, int id) {
-    this.x = x;
-    this.y = y;
+  public TouchCopy(int pageX, int pageY, int id) {
+    this.pageX = pageX;
+    this.pageY = pageY;
+    this.clientX = 0;
+    this.clientY = 0;
+    this.screenX = 0;
+    this.screenY = 0;
     this.id = id;
   }
 
+  public TouchCopy(Touch touch) {
+    this.pageX = touch.getPageX();
+    this.pageY = touch.getPageY();
+    this.clientX = touch.getClientX();
+    this.clientY = touch.getClientY();
+    this.screenX = touch.getScreenX();
+    this.screenY = touch.getScreenY();
+    this.id = touch.getIdentifier();
+  }
+
   public int getPageX() {
-    return x;
+    return pageX;
   }
 
   public int getPageY() {
-    return y;
+    return pageY;
+  }
+
+  public int getClientX() {
+    return clientX;
+  }
+
+  public int getClientY() {
+    return clientY;
+  }
+
+  public int getScreenX() {
+    return screenX;
+  }
+
+  public int getScreenY() {
+    return screenY;
   }
 
   public int getIdentifier() {

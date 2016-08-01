@@ -33,7 +33,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.RootPanel;
-
 import com.googlecode.mgwt.dom.client.event.orientation.OrientationChangeEvent;
 import com.googlecode.mgwt.dom.client.event.orientation.OrientationChangeEvent.ORIENTATION;
 import com.googlecode.mgwt.dom.client.event.orientation.OrientationChangeHandler;
@@ -41,6 +40,7 @@ import com.googlecode.mgwt.ui.client.MGWTSettings.ViewPort;
 import com.googlecode.mgwt.ui.client.util.OrientationHandler;
 import com.googlecode.mgwt.ui.client.widget.main.IOS71BodyBug;
 import com.googlecode.mgwt.ui.client.widget.main.MainResourceHolder;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchSupport;
 
 /**
  * The MGWT Object is used to apply settings for an MGWT App. It also provides an instance of
@@ -151,12 +151,31 @@ public class MGWT {
     }
 
     scrollingDisabled = settings.isPreventScrolling();
+
+    if (TouchSupport.isTouchEventsEmulatedUsingPointerEvents())
+    {
+      MetaElement tapHighlight = Document.get().createMetaElement();
+      tapHighlight.setName("msapplication-tap-highlight");
+      tapHighlight.setContent("no");
+      head.appendChild(tapHighlight);
+
+      if (settings.isPreventScrolling()) {
+        BodyElement body = Document.get().getBody();
+        setupPreventScrollingIE10(body);
+      }
+    }
+
     if (settings.isPreventScrolling() && getOsDetection().isIOs()) {
       BodyElement body = Document.get().getBody();
       setupPreventScrolling(body);
-
     }
 
+    if (TouchSupport.isTouchEventsEmulatedUsingMouseEvents() && TouchSupport.isTouchEventsSupported()) {
+      // we cancel mouse events on devices that might support touch and a native
+      // touch is in progress
+      TouchSupport.cancelMouseEventsDuringTouch();
+    }
+    
     if (settings.isDisablePhoneNumberDetection()) {
       MetaElement fullScreenMetaTag = Document.get().createMetaElement();
       fullScreenMetaTag.setName("format-detection");
@@ -295,15 +314,41 @@ public class MGWT {
     return elementsByTagName.getItem(0);
   }
 
-  private static native void setupPreventScrolling(Element el)/*-{
-		var func = function(event) {
-			event.preventDefault();
-			return false;
-		};
-
-		el.ontouchmove = func;
-
+  /**
+   * Only call preventDefault on the first TouchMove event. It stops the screen bounce
+   * and allows other scrollable widgets to function with their default behaviour e.g MTextArea
+   * @param el
+   */
+  private static native void setupPreventScrolling(Element el) /*-{
+    var onGoingTouches = {};
+    
+    var handleTouchMove = function(touchMoveEvent) {
+      var touches = touchMoveEvent.changedTouches;
+      for (var i=0; i < touches.length; i++) {
+        if (!(touches[i].identifier in onGoingTouches)) {
+          onGoingTouches[touches[i].identifier] = "";
+          touchMoveEvent.preventDefault();
+        }
+      }
+    };
+    
+    var cleanup = function(event) {
+      var touches = event.changedTouches;
+      for (var i=0; i < touches.length; i++) {
+        if (touches[i].identifier in onGoingTouches) {
+          delete onGoingTouches[touches[i].identifier];
+        }
+      }
+    };
+    
+    el.addEventListener("touchend", cleanup, false);
+    el.addEventListener("touchcancel", cleanup, false);
+    el.addEventListener("touchmove", handleTouchMove, false);
   }-*/;
+
+  private static void setupPreventScrollingIE10(Element el) {
+    el.setAttribute("style", "-ms-touch-action: none; touch-action: none;");
+  }
 
   /**
    * A utility method to hide the soft keyboard
